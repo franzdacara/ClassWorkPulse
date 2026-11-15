@@ -53,6 +53,7 @@ instead (keep a single `.gguf` there). Its chat template is read from the file.
 | `lib/ai/progress_context.dart` | Builds the model's prompt from the saved entries |
 | `lib/ai/assistant_controller.dart` | Loads the model (`llamadart`) and runs the chat |
 | `android/.../MainActivity.kt` | Streams the model out of the APK on first use |
+| `assets/branding/classwork_pulse_logo.png` | Shared app logo used by the launcher icons and loading screens |
 
 For each question the app rebuilds the system prompt from the selected
 student's database records: an

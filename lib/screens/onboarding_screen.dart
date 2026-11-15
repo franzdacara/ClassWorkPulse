@@ -42,10 +42,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Icon(
-                    Icons.auto_stories,
-                    size: 64,
-                    color: theme.colorScheme.primary,
+                  Image.asset(
+                    'assets/branding/classwork_pulse_logo.png',
+                    width: 180,
+                    height: 140,
+                    fit: BoxFit.contain,
                   ),
                   const SizedBox(height: 20),
                   Text(

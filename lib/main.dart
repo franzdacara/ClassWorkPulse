@@ -123,7 +123,14 @@ class _AppRootState extends State<_AppRoot> {
       );
     }
     if (database == null) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      return const Scaffold(
+        body: Center(
+          child: Image(
+            image: AssetImage('assets/branding/classwork_pulse_logo.png'),
+            width: 180,
+          ),
+        ),
+      );
     }
     if (_profiles.isEmpty) {
       return OnboardingScreen(onSubmit: _saveProfile);

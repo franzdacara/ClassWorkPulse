@@ -72,6 +72,7 @@ flutter:
   # git - run `dart run tool/fetch_model.dart` to download it.
   assets:
     - assets/models/
+    - assets/branding/classwork_pulse_logo.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

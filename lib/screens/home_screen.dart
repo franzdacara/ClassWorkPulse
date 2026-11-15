@@ -7,7 +7,7 @@ import 'assistant_screen.dart';
 import 'daily_log_form.dart';
 import 'history_screen.dart';
 import 'parent_update_screen.dart';
-import 'profile_fields.dart';
+import 'dashboard_screen.dart';
 
 /// Main shell: the daily log, the saved history and the assistant.
 class HomeScreen extends StatefulWidget {
@@ -20,6 +20,7 @@ class HomeScreen extends StatefulWidget {
     required this.onStudentAdded,
     required this.onStudentDeleted,
     required this.onProfileChanged,
+    required this.onOpenDashboard,
   });
 
   final AppDatabase database;
@@ -29,6 +30,7 @@ class HomeScreen extends StatefulWidget {
   final Future<void> Function(StudentProfile profile) onStudentAdded;
   final Future<void> Function(int studentId) onStudentDeleted;
   final Future<void> Function(StudentProfile profile) onProfileChanged;
+  final VoidCallback onOpenDashboard;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -83,8 +85,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _editProfile() async {
     final profile = await showDialog<StudentProfile>(
       context: context,
-      builder: (context) =>
-          _ProfileDialog(initial: widget.profile, title: 'Student and teacher'),
+      builder: (context) => StudentProfileDialog(
+        initial: widget.profile,
+        title: 'Student and teacher',
+      ),
     );
     if (profile != null) await widget.onProfileChanged(profile);
   }
@@ -92,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _addStudent() async {
     final profile = await showDialog<StudentProfile>(
       context: context,
-      builder: (context) => const _ProfileDialog(title: 'Add student'),
+      builder: (context) => const StudentProfileDialog(title: 'Add student'),
     );
     if (profile != null) await widget.onStudentAdded(profile);
   }
@@ -181,6 +185,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          tooltip: 'Student dashboard',
+          icon: const Icon(Icons.arrow_back),
+          onPressed: widget.onOpenDashboard,
+        ),
         title: Text(title),
         actions: [
           if (_tab == _assistantTab)
@@ -269,45 +278,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _ProfileDialog extends StatefulWidget {
-  const _ProfileDialog({this.initial, required this.title});
-
-  final StudentProfile? initial;
-  final String title;
-
-  @override
-  State<_ProfileDialog> createState() => _ProfileDialogState();
-}
-
-class _ProfileDialogState extends State<_ProfileDialog> {
-  late StudentProfile? _profile = widget.initial;
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(widget.title),
-      content: SingleChildScrollView(
-        child: ProfileFields(
-          initial: widget.initial,
-          onChanged: (profile) => setState(() => _profile = profile),
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
-        ),
-        FilledButton(
-          onPressed: _profile == null
-              ? null
-              : () => Navigator.of(context).pop(_profile),
-          child: const Text('Save'),
-        ),
-      ],
     );
   }
 }

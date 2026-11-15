@@ -41,6 +41,9 @@ void main() {
     await tester.enterText(find.byType(TextField).first, 'Maya');
     await tester.pump();
     await tester.tap(find.text('Get started'));
+    await _pumpUntilFound(tester, find.text('Student dashboard'));
+    expect(find.text('Maya'), findsOneWidget);
+    await tester.tap(find.text('Maya'));
     await _pumpUntilFound(tester, find.text("Maya's daily log"));
     expect(await tester.runAsync(db.studentName), 'Maya');
 

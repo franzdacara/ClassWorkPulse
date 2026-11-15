@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 
 import 'data/app_database.dart';
 import 'models/student_profile.dart';
+import 'screens/dashboard_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/onboarding_screen.dart';
 
@@ -51,6 +52,7 @@ class _AppRootState extends State<_AppRoot> {
   AppDatabase? _database;
   List<StudentProfile> _profiles = const [];
   int? _selectedStudentId;
+  bool _showDashboard = true;
   Object? _error;
 
   @override
@@ -68,6 +70,7 @@ class _AppRootState extends State<_AppRoot> {
         _database = database;
         _profiles = profiles;
         _selectedStudentId = profiles.isEmpty ? null : profiles.first.id;
+        _showDashboard = true;
       });
     } catch (error) {
       if (!mounted) return;
@@ -96,6 +99,13 @@ class _AppRootState extends State<_AppRoot> {
 
   void _selectStudent(int id) => setState(() => _selectedStudentId = id);
 
+  void _openStudent(int id) {
+    setState(() {
+      _selectedStudentId = id;
+      _showDashboard = false;
+    });
+  }
+
   Future<void> _deleteStudent(int id) async {
     await _database!.deleteStudent(id);
     final profiles = await _database!.profiles();
@@ -103,6 +113,7 @@ class _AppRootState extends State<_AppRoot> {
     setState(() {
       _profiles = profiles;
       _selectedStudentId = profiles.isEmpty ? null : profiles.first.id;
+      _showDashboard = true;
     });
   }
 
@@ -135,6 +146,14 @@ class _AppRootState extends State<_AppRoot> {
     if (_profiles.isEmpty) {
       return OnboardingScreen(onSubmit: _saveProfile);
     }
+    if (_showDashboard) {
+      return DashboardScreen(
+        profiles: _profiles,
+        onStudentSelected: _openStudent,
+        onStudentAdded: _addProfile,
+        onStudentDeleted: _deleteStudent,
+      );
+    }
     final profile = _profiles.firstWhere((p) => p.id == _selectedStudentId);
     return HomeScreen(
       database: database,
@@ -144,6 +163,7 @@ class _AppRootState extends State<_AppRoot> {
       onStudentAdded: _addProfile,
       onStudentDeleted: _deleteStudent,
       onProfileChanged: _saveProfile,
+      onOpenDashboard: () => setState(() => _showDashboard = true),
     );
   }
 }
